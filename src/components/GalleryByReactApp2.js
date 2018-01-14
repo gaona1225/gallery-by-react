@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ImgFigure from '../components/ImgFigure';
-import ControllerUnits from '../components/ControllerUnits';
+import ImgFigure from '../components/ImgFigure'
 
 require('../styles/GalleryByReactApp.scss');
 
@@ -44,10 +43,7 @@ class GalleryByReactApp extends React.Component {
                     pos: [
                         'left': '0',
                         'right': '0'
-                    ],
-                    rotate: 0, // 图片的选择角度
-                    isInverse: false, // 图片正反面 false表示正面
-                    isCenter: false // 图片是否居中
+                    ]
                 }*/
             ]
         }
@@ -58,42 +54,6 @@ class GalleryByReactApp extends React.Component {
     */
     getRangeRandom(low, hight) {
         return Math.ceil(Math.random() * (hight - low) + low);
-    }
-
-    /*
-    * 获取 0~30° 之间的一个任意正负值
-    */
-    get30DegRandom() {
-        let deg = (Math.random() > .5 ? '' : '-') + Math.ceil(Math.random() * 30);
-        return deg;
-    }
-
-    /*
-    * 翻转图片
-    * @param index 传入当前被执行inverse操作的图片对应的图片信息数组的index值
-    * @returns {Function} 这是一个闭包函数, 其内return一个真正待被执行的函数
-    */
-    inverse(index) {
-        return function () {
-            console.log('call inverse');
-            let imgsArrangeArr = this.state.imgsArrangeArr;
-            imgsArrangeArr[index].isInverse = !imgsArrangeArr[index].isInverse;
-            this.setState({
-                imgsArrangeArr: imgsArrangeArr
-            });
-        }.bind(this);
-    }
-
-    /*
-    * 利用arrange函数， 居中对应index的图片
-    * @param index, 需要被居中的图片对应的图片信息数组的index值
-    * @returns {Function}
-    */
-    center(index) {
-        return function () {
-            console.log('call center');
-            this.rearrange(index);
-        }.bind(this);
     }
 
     /*
@@ -111,19 +71,13 @@ class GalleryByReactApp extends React.Component {
         let vPosRangeTopY = vPosRange.topY;
         let vPosRangeX = vPosRange.x;
         let imgsArrangeTopArr = [];
-        let topImgNum = Math.floor(Math.random() * 2); // 取一个或是不取
+        let topImgNum = Math.ceil(Math.random() * 2); // 取一个或是不取
         let topImgSpliceIndex = 0;
 
         let imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex, 1);
 
         // 首先居中centerIndex的图片
-        // 居中的centerIndex图片不需要选择
-
-        imgsArrangeCenterArr[0] = {
-            pos: centerPos,
-            rotate: 0,
-            isCenter: true
-        }
+        imgsArrangeCenterArr[0].pos = centerPos;
 
         // 取出要布局上侧图片的状态信息
         topImgSpliceIndex = Math.ceil(Math.random() * imgsArrangeArr.length - topImgNum);
@@ -132,13 +86,9 @@ class GalleryByReactApp extends React.Component {
 
         // 布局位于上侧的图片
         imgsArrangeTopArr.forEach( (value, index) => {
-            imgsArrangeTopArr[index] = {
-                pos: {
-                    top: this.getRangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
-                    left: this.getRangeRandom(vPosRangeX[0], vPosRangeX[1])
-                },
-                rotate: this.get30DegRandom(),
-                isCenter: false
+            imgsArrangeTopArr[index].pos = {
+                top: this.getRangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
+                left: this.getRangeRandom(vPosRangeX[0], vPosRangeX[1])
             }
         });
 
@@ -154,13 +104,9 @@ class GalleryByReactApp extends React.Component {
                 hPosRangeLORX = hPosRangeRightSecX;
             }
 
-            imgsArrangeArr[i] = {
-                pos: {
-                    top: this.getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
-                    left: this.getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
-                },
-                rotate: this.get30DegRandom(),
-                isCenter: false
+            imgsArrangeArr[i].pos = {
+                top: this.getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
+                left: this.getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
             }
         }
 
@@ -224,14 +170,10 @@ class GalleryByReactApp extends React.Component {
                     pos: {
                         let: 0,
                         top: 0
-                    },
-                    rotate: 0,
-                    isInverse: false,
-                    isCenter: false
+                    }
                 }
             };
-            imgFigures.push(<ImgFigure key = {index} data = {value} ref = {`imgFigure${index}`} arrange = {self.state.imgsArrangeArr[index]} inverse = {self.inverse(index)} center = {self.center(index)} />);
-            controllerUnits.push(<ControllerUnits key = {index} arrange = {self.state.imgsArrangeArr[index]} inverse = {self.inverse(index)} center = {self.center(index)} />);
+            imgFigures.push(<ImgFigure key = {index} data = {value} ref={`imgFigure${index}`} arrange = {self.state.imgsArrangeArr[index]} />);
         });
 
         return (
